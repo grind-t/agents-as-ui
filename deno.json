@@ -1,12 +1,36 @@
 {
-  "name": "@grind-t/<package-name>",
+  "name": "@grind-t/agents-as-ui",
   "version": "0.1.0",
   "license": "MIT",
   "exports": "./src/main.ts",
   "tasks": {
-    "dev": "deno run --watch ./src/main.ts"
+    "clean": "rm -rf ./dist",
+    "bundle-tailwind": "./tailwind/tailwindcss -o ./dist/index.css -i ./src/index.css",
+    "bundle-client": "deno bundle --outdir ./dist ./src/index.html",
+    "bundle": {
+      "command": "deno task \"bundle-*\"",
+      "dependencies": ["clean"]
+    },
+    "dev-tailwind": "deno task bundle-tailwind --watch",
+    "dev-client": "deno task bundle-client --watch",
+    "dev-server": "deno run --allow-net --allow-read --allow-env --env-file --watch ./src/server.ts",
+    "dev": {
+      "command": "deno task \"dev-*\"",
+      "dependencies": ["clean"]
+    }
   },
   "imports": {
-    "@std/assert": "jsr:@std/assert@1"
+    "@openai/agents": "npm:@openai/agents@^0.4.4",
+    "@std/assert": "jsr:@std/assert@1",
+    "@std/http": "jsr:@std/http@^1.0.23",
+    "@std/path": "jsr:@std/path@^1.1.4",
+    "@std/streams": "jsr:@std/streams@^1.0.17",
+    "daisyui": "npm:daisyui@^5.5.14",
+    "preact": "npm:preact@^10.28.2",
+    "tailwindcss": "npm:tailwindcss@^4.1.18"
+  },
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact"
   }
 }
