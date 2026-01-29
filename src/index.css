@@ -4,3 +4,8 @@
 @source not "../tailwind/daisyui{,*}.mjs";
 
 @plugin "../tailwind/daisyui.mjs";
+
+html,
+body {
+    height: 100%;
+}
