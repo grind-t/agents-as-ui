@@ -1,6 +1,6 @@
 import { serveDir } from "@std/http/file-server";
 import { join } from "@std/path";
-import { Agent, run } from "@openai/agents";
+import { Agent, run, type RunStreamEvent } from "@openai/agents";
 
 const AGENT_ROUTE = new URLPattern({ pathname: "/agent" });
 
@@ -13,13 +13,20 @@ const agent = new Agent({
 async function handler(req: Request): Promise<Response> {
   if (AGENT_ROUTE.test(req.url)) {
     const body = await req.json();
-    const result = await run(agent, body.message, { stream: true });
-    const stream = result.toTextStream() as ReadableStream<string>;
-    const byteStream = stream.pipeThrough(new TextEncoderStream());
+    const result = await run(agent, body.history, { stream: true });
+    const stream = result.toStream() as ReadableStream<RunStreamEvent>;
+    const jsonStream = stream.pipeThrough(
+      new TransformStream({
+        transform(event, controller) {
+          controller.enqueue(JSON.stringify(event) + "\n");
+        },
+      }),
+    );
+    const byteStream = jsonStream.pipeThrough(new TextEncoderStream());
 
     return new Response(byteStream, {
       headers: {
-        "content-type": "text/plain",
+        "content-type": "application/x-ndjson",
         "x-content-type-options": "nosniff",
       },
     });

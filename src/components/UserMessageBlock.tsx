@@ -5,5 +5,8 @@ export type UserMessageBlockProps = {
 };
 
 export function UserMessageBlock({ item }: UserMessageBlockProps) {
-  return <div className="p-2 rounded">{item.role}: {item.content}</div>;
+  const text = typeof item.content === "string"
+    ? item.content
+    : item.content.find((v) => v.type === "input_text")?.text;
+  return <div className="p-2 rounded">{item.role}: {text}</div>;
 }

@@ -7,10 +7,13 @@ export type AssistantMessageBlockProps = {
 export function AssistantMessageBlock(
   { item }: AssistantMessageBlockProps,
 ) {
+  const text = item.content.filter((v) => v.type === "output_text").map((v) =>
+    v.text
+  ).join("\n");
+
   return (
     <div className="p-2 rounded">
-      {item.role}:{" "}
-      {item.content[0].type === "output_text" ? item.content[0].text : null}
+      {item.role}: {text}
     </div>
   );
 }
