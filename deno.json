@@ -2,7 +2,10 @@
   "name": "@grind-t/agents-as-ui",
   "version": "0.1.0",
   "license": "MIT",
-  "exports": "./src/main.ts",
+  "exports": "./src/server.ts",
+  "publish": {
+    "exclude": ["!dist"]
+  },
   "tasks": {
     "clean": "rm -rf ./dist",
     "bundle-tailwind": "./tailwind/tailwindcss -o ./dist/index.css -i ./src/index.css",
