@@ -1,6 +1,5 @@
-import { serveDir } from "@std/http/file-server";
-import { join } from "@std/path";
 import { type Agent, run, type RunStreamEvent } from "@openai/agents";
+import { serveFiles } from "./server-files.ts";
 
 const AGENT_ROUTE = new URLPattern({ pathname: "/agent" });
 
@@ -27,9 +26,6 @@ export function getAgentsHandler(agents: Agent[]): Deno.ServeHandler {
       });
     }
 
-    return serveDir(req, {
-      fsRoot: join(import.meta.dirname!, "..", "dist"),
-      enableCors: true,
-    });
+    return serveFiles(req);
   };
 }
